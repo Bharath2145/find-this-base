@@ -1,5 +1,8 @@
-from fastapi import APIRouter, UploadFile, File
+from fastapi import APIRouter, UploadFile, File, Depends
+from sqlalchemy.orm import Session
 
+from app.database.dependencies import get_db
+from app.models.upload import Upload
 from app.schemas.upload import UploadResponse
 from app.services.upload_service import save_upload
 
@@ -11,11 +14,24 @@ router = APIRouter()
     response_model=UploadResponse,
 )
 async def upload_screenshot(
-    file: UploadFile = File(...)
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
 ):
-    upload_id, _ = save_upload(file)
+    upload_id, filepath = save_upload(file)
+
+    upload = Upload(
+        id=upload_id,
+        contributor_id=None,
+        original_filename=file.filename,
+        stored_filename=filepath.name,
+        status="pending",
+    )
+
+    db.add(upload)
+    db.commit()
+    db.refresh(upload)
 
     return UploadResponse(
-        upload_id=upload_id,
-        status="processing",
+        upload_id=upload.id,
+        status=upload.status,
     )

@@ -1,6 +1,7 @@
 import uuid
+from datetime import datetime
 
-from sqlalchemy import Column, String, ForeignKey
+from sqlalchemy import Column, String, DateTime, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 
@@ -19,18 +20,29 @@ class Upload(Base):
     contributor_id = Column(
         UUID(as_uuid=True),
         ForeignKey("contributors.id"),
+        nullable=True,
+    )
+
+    original_filename = Column(
+        String(255),
         nullable=False,
     )
 
-    filename = Column(
+    stored_filename = Column(
         String(255),
         nullable=False,
     )
 
     status = Column(
         String(50),
-        nullable=False,
         default="pending",
+        nullable=False,
+    )
+
+    created_at = Column(
+        DateTime,
+        default=datetime.utcnow,
+        nullable=False,
     )
 
     contributor = relationship(
