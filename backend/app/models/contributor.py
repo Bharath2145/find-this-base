@@ -1,5 +1,5 @@
 import uuid
-
+from sqlalchemy.orm import relationship
 from sqlalchemy import Column, String, Integer
 from sqlalchemy.dialects.postgresql import UUID
 
@@ -31,4 +31,10 @@ class Contributor(Base):
         Integer,
         default=0,
         nullable=False,
+    )
+
+    uploads = relationship(
+        "Upload",
+        back_populates="contributor",
+        cascade="all, delete-orphan",
     )

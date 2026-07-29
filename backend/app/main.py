@@ -5,7 +5,6 @@ from app.routes.upload import router as upload_router
 
 import app.models
 
-Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="People's COC API",

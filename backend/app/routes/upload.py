@@ -1,22 +1,21 @@
 from fastapi import APIRouter, UploadFile, File
-from pathlib import Path
-import shutil
+
+from app.schemas.upload import UploadResponse
+from app.services.upload_service import save_upload
 
 router = APIRouter()
 
-UPLOAD_DIR = Path("uploads/screenshots")
-UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
+@router.post(
+    "/screenshot",
+    response_model=UploadResponse,
+)
+async def upload_screenshot(
+    file: UploadFile = File(...)
+):
+    upload_id, _ = save_upload(file)
 
-@router.post("/screenshot")
-async def upload_screenshot(file: UploadFile = File(...)):
-    file_path = UPLOAD_DIR / file.filename
-
-    with open(file_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
-
-    return {
-        "success": True,
-        "filename": file.filename,
-        "path": str(file_path)
-    }
+    return UploadResponse(
+        upload_id=upload_id,
+        status="processing",
+    )
