@@ -1,0 +1,18 @@
+# ---------- Frontend ----------
+frontend/node_modules/
+frontend/.next/
+
+# ---------- Backend ----------
+backend/venv/
+backend/.env
+backend/uploads/
+
+# Python
+**/__pycache__/
+**/*.pyc
+
+# VS Code
+.vscode/
+
+# Logs
+*.log
