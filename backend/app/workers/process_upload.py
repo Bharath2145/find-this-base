@@ -1,10 +1,18 @@
-from time import sleep
+from sqlalchemy.orm import Session
+
+from app.models.upload import Upload
 
 
-def process_upload(upload_id):
-    print(f"Processing upload: {upload_id}")
+def process_upload(db: Session, upload_id):
+    upload = db.get(Upload, upload_id)
 
-    # Simulate AI work
-    sleep(5)
+    if upload is None:
+        return
 
-    print(f"Finished upload: {upload_id}")
+    upload.status = "processing"
+    db.commit()
+
+    # OpenCV / YOLO will go here
+
+    upload.status = "completed"
+    db.commit()

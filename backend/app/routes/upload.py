@@ -5,7 +5,7 @@ from app.database.dependencies import get_db
 from app.models.upload import Upload
 from app.schemas.upload import UploadResponse
 from app.services.upload_service import save_upload
-
+from app.workers.process_upload import process_upload
 router = APIRouter()
 
 
@@ -30,6 +30,7 @@ async def upload_screenshot(
     db.add(upload)
     db.commit()
     db.refresh(upload)
+    process_upload(db, upload.id)
 
     return UploadResponse(
         upload_id=upload.id,
