@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from app.database.database import Base, engine
 from app.routes.upload import router as upload_router
 
-import app.models.base
+import app.models
 
 Base.metadata.create_all(bind=engine)
 
